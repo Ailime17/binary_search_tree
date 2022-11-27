@@ -114,10 +114,23 @@ class Tree
       before_smallest.left = child_of_smallest_child
     end
   end
+
+  def find(value, cur_node = @root)
+    return 'value not found' if cur_node.nil?
+
+    if value == cur_node.data
+      cur_node
+    elsif  value > cur_node.data
+      find(value, cur_node.right)
+    else
+      find(value, cur_node.left)
+    end
+  end
 end
 
 arr = [1,2,3,4,5,6,7]
 tree = Tree.new(arr)
 tree.insert(12)
 tree.delete(4)
-p tree
+#p tree
+p tree.find(7)
