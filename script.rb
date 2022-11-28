@@ -128,6 +128,7 @@ class Tree
     end
   end
 
+  # breadth-first search
   def level_order_traversal(queue = (@root.nil? ? [] : [@root]), array = (@root.nil? ? [] : [@root]), &block)
     return array if @root.nil?
 
@@ -153,6 +154,48 @@ class Tree
       array.map {|node| node.data}
     end
   end
+
+  # 3 depth-first searches
+  def preorder_traversal(node = @root, array = [], &block)
+    return if node.nil?
+
+    array.push(node)
+    left_child = node.left
+    right_child = node.right
+    preorder_traversal(left_child, array)
+    preorder_traversal(right_child, array)
+    if block_given?
+      array.each {|node| yield node}
+    else
+      array.map {|node| node.data}
+    end
+  end
+
+  def inorder_traversal(node = @root, array = [], &block)
+    return if node.nil?
+
+    inorder_traversal(node.left, array)
+    array.push(node)
+    inorder_traversal(node.right, array)
+    if block_given?
+      array.each {|node| yield node}
+    else
+      array.map {|node| node.data}
+    end
+  end
+
+  def postorder_traversal(node = @root, array = [], &block)
+    return if node.nil?
+
+    postorder_traversal(node.left, array)
+    postorder_traversal(node.right, array)
+    array.push(node)
+    if block_given?
+      array.each {|node| yield node}
+    else
+      array.map {|node| node.data}
+    end
+  end
 end
 
 arr = [1,2,3,4,5,6,7]
@@ -162,4 +205,6 @@ tree = Tree.new(arr)
 # p tree.find(7)
 # tree.level_order_traversal {|i| p i}
 # p tree.level_order_traversal
-p tree
+# p tree.preorder_traversal
+# p tree.inorder_traversal
+# p tree.postorder_traversal
