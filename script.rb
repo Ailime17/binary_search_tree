@@ -11,6 +11,7 @@ end
 
 # class for the whole balanced binary tree
 class Tree
+  # balanced binary tree is created from the array
   def initialize(array)
     @array = array
     @array.uniq!
@@ -82,13 +83,13 @@ class Tree
     elsif cur_node.right.nil?
       prev_node.right = cur_node.left if direction == 'right'
       prev_node.left = cur_node.left if direction == 'left'
-    # if cur_node has child on right and child on left, find the smallest child of the right child of cur_node:
+    # if cur_node has child on right and child on left, search for the smallest child of the right child of cur_node:
     else
-      find_node_to_swap(prev_node, cur_node, direction)
+      search_node_to_swap(prev_node, cur_node, direction)
     end
   end
 
-  def find_node_to_swap(prev_node, cur_node, direction)
+  def search_node_to_swap(prev_node, cur_node, direction)
     right_child = cur_node.right
     if right_child.left.nil?
       child_of_right_child = right_child.right
@@ -126,11 +127,39 @@ class Tree
       find(value, cur_node.left)
     end
   end
+
+  def level_order_traversal(queue = (@root.nil? ? [] : [@root]), array = (@root.nil? ? [] : [@root]), &block)
+    return array if @root.nil?
+
+    next_node = queue.shift
+    left_child = next_node.left
+    right_child = next_node.right
+    unless left_child.nil?
+      queue.push(left_child)
+      array.push(left_child)
+    end
+    unless right_child.nil?
+      queue.push(right_child)
+      array.push(right_child)
+    end
+    return if left_child.nil? && right_child.nil? && queue.empty?
+
+    level_order_traversal(queue, array)
+
+    # if block given, yield each node to the block, else, return an array of node values:
+    if block_given?
+      array.each {|node| yield node}
+    else
+      array.map {|node| node.data}
+    end
+  end
 end
 
 arr = [1,2,3,4,5,6,7]
 tree = Tree.new(arr)
-tree.insert(12)
-tree.delete(4)
-#p tree
-p tree.find(7)
+# tree.insert(12)
+# tree.delete(4)
+# p tree.find(7)
+# tree.level_order_traversal {|i| p i}
+# p tree.level_order_traversal
+p tree
