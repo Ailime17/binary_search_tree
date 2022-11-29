@@ -1,4 +1,4 @@
-# class for a single node
+# class for a single node of the tree
 class Node
   attr_accessor :left, :right, :data
 
@@ -25,8 +25,6 @@ class Tree
     else
       mid = (start_indx + end_indx) / 2
       node = Node.new(array[mid])
-      print node.data
-      print ' '
       node.left = build_tree(array, start_indx, mid - 1)
       node.right = build_tree(array, mid + 1, end_indx)
       node
@@ -196,11 +194,47 @@ class Tree
       array.map {|node| node.data}
     end
   end
+
+  def height(value_of_node)
+    node = find(value_of_node)
+    return 'no such node in the tree' if node == 'value not found'
+
+
+    num_of_left_edges = (node.left.nil? ? -1 : traverse(node.left))
+    num_of_right_edges = (node.right.nil? ? -1 : traverse(node.right))
+    if num_of_left_edges > num_of_right_edges
+      num_of_left_edges + 1
+    else
+      num_of_right_edges + 1
+    end
+  end
+
+  def traverse(node, number = 0)
+    if !(node.left.nil?) && !(node.right.nil?)
+      number += 1
+      traverse(node.left, number)
+      traverse(node.right, number)
+    elsif !(node.left.nil?)
+      number += 1
+      traverse(node.left, number)
+    elsif !(node.right.nil?)
+      number += 1
+      traverse(node.right, number)
+    end
+    number
+  end
+
+  def rebalance
+    updated_array = level_order_traversal
+    initialize(updated_array)
+  end
 end
 
 arr = [1,2,3,4,5,6,7]
 tree = Tree.new(arr)
-# tree.insert(12)
+tree.insert(12)
+tree.insert(14)
+tree.insert(17)
 # tree.delete(4)
 # p tree.find(7)
 # tree.level_order_traversal {|i| p i}
@@ -208,3 +242,7 @@ tree = Tree.new(arr)
 # p tree.preorder_traversal
 # p tree.inorder_traversal
 # p tree.postorder_traversal
+# p tree
+tree.rebalance
+# p tree
+puts tree.height(5)
