@@ -212,14 +212,14 @@ class Tree
   def traverse(node, number = 0)
     if !(node.left.nil?) && !(node.right.nil?)
       number += 1
-      traverse(node.left, number)
-      traverse(node.right, number)
+      number = traverse(node.left, number)
+      number = traverse(node.right, number)
     elsif !(node.left.nil?)
       number += 1
-      traverse(node.left, number)
+      number = traverse(node.left, number)
     elsif !(node.right.nil?)
       number += 1
-      traverse(node.right, number)
+      number = traverse(node.right, number)
     end
     number
   end
@@ -243,6 +243,6 @@ tree.insert(17)
 # p tree.inorder_traversal
 # p tree.postorder_traversal
 # p tree
-tree.rebalance
+# tree.rebalance
 # p tree
-puts tree.height(5)
+puts tree.height(6)
