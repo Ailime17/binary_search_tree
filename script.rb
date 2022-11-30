@@ -199,9 +199,8 @@ class Tree
     node = find(value_of_node)
     return 'no such node in the tree' if node == 'value not found'
 
-
-    num_of_left_edges = (node.left.nil? ? -1 : traverse(node.left))
-    num_of_right_edges = (node.right.nil? ? -1 : traverse(node.right))
+    num_of_left_edges = (node.left.nil? ? -1 : traverse_height(node.left))
+    num_of_right_edges = (node.right.nil? ? -1 : traverse_height(node.right))
     if num_of_left_edges > num_of_right_edges
       num_of_left_edges + 1
     else
@@ -209,19 +208,44 @@ class Tree
     end
   end
 
-  def traverse(node, number = 0)
+  def traverse_height(node, number = 0)
     if !(node.left.nil?) && !(node.right.nil?)
       number += 1
-      number = traverse(node.left, number)
-      number = traverse(node.right, number)
+      number = traverse_height(node.left, number)
+      number = traverse_height(node.right, number)
     elsif !(node.left.nil?)
       number += 1
-      number = traverse(node.left, number)
+      number = traverse_height(node.left, number)
     elsif !(node.right.nil?)
       number += 1
-      number = traverse(node.right, number)
+      number = traverse_height(node.right, number)
     end
     number
+  end
+
+  def depth(value_of_node)
+    node = find(value_of_node)
+    return 'no such node in the tree' if node == 'value not found'
+
+    traverse_depth(@root, node)
+  end
+
+  def traverse_depth(cur_node, search_node, num_of_edges = 0)
+    if cur_node.data == search_node.data
+      num_of_edges
+    elsif search_node.data > cur_node.data
+      num_of_edges += 1
+      traverse_depth(cur_node.right, search_node, num_of_edges)
+    elsif search_node.data < cur_node.data
+      num_of_edges += 1
+      traverse_depth(cur_node.left, search_node, num_of_edges)
+    end
+  end
+
+  def balanced?
+    array_of_nodes = self.level_order_traversal
+    balanced_tree = Tree.new(array_of_nodes)
+    balanced_tree.level_order_traversal == self.level_order_traversal
   end
 
   def rebalance
@@ -232,17 +256,20 @@ end
 
 arr = [1,2,3,4,5,6,7]
 tree = Tree.new(arr)
-tree.insert(12)
-tree.insert(14)
-tree.insert(17)
-# tree.delete(4)
-# p tree.find(7)
+# p tree.balanced?
 # tree.level_order_traversal {|i| p i}
 # p tree.level_order_traversal
 # p tree.preorder_traversal
 # p tree.inorder_traversal
 # p tree.postorder_traversal
-# p tree
+# tree.insert(12)
+# tree.insert(14)
+# tree.insert(17)
+# p tree.balanced?
 # tree.rebalance
-# p tree
-puts tree.height(6)
+# p tree.balanced?
+# tree.delete(4)
+# p tree.find(7)
+# puts tree.height(6)
+# puts tree.depth(2)
+p tree
